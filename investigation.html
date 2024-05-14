@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Searching for a missing person</title>
+  <style>
+
+    .map-div-class {
+      height: 100%;
+    }
+
+    html,
+    body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+    }
+  </style>
+</head>
+<body>
+
+<div id="map" class="map-div-class"></div>
+
+<script>
+  var gmarkers = [];
+
+  function initMap() {
+    var mapOptions = {
+      center: new google.maps.LatLng(markers[0].latitude, markers[0].longitude),
+      zoom: 5,
+      mapTypeId: google.maps.MapTypeId.ROADMAP,
+      gestureHandling: 'greedy'
+    };
+
+    var infoWindow = new google.maps.InfoWindow();
+    var map = new google.maps.Map(document.getElementById("map"), mapOptions);
+    for (i = 0; i < markers.length; i++) {
+      var data = markers[i]
+      var myLatlng = new google.maps.LatLng(data.latitude, data.longitude);
+      var marker = new google.maps.Marker({
+        position: myLatlng,
+        map: map,
+        title: data.name,
+        draggable: false,
+        markerID: data.id
+      });
+      gmarkers[data.id] = marker;
+      (function(marker, data) {
+        google.maps.event.addListener(marker, "click", function(e) {
+
+          var animationOptions = {
+            animate: true,
+            duration: 1000, // Animation duration in milliseconds
+            easing: 'linear' // Easing function for animation
+          };
+
+
+          map.panTo(marker.getPosition());
+//          map.panTo(marker.getPosition(), animationOptions);
+
+/*
+          var newLocation = marker.getPosition();
+          var currentBounds = map.getBounds();
+          var newBounds = currentBounds.extend(newLocation);
+          map.fitBounds(newBounds, 20000);
+*/
+
+          infoWindow.setContent(data.address);
+          infoWindow.open(map, marker);
+          map.setZoom(data.zoom);
+        });
+      })(marker, data);
+      google.maps.event.addListener(marker, 'dragend', function(evt) {
+        document.getElementById('current').innerHTML = '<p>Marker dropped: Current Lat: ' + evt.latLng.lat().toFixed(3) + ' Current Lng: ' + evt.latLng.lng().toFixed(3) + '</p>';
+      });
+
+      var startWindow = new google.maps.InfoWindow();
+      var startMarker = new google.maps.Marker({
+        position: new google.maps.LatLng(52.074928283691406, 4.300699710845947),
+        map: map,
+        title: "Hague, Netherlands",
+        draggable: false,
+        markerID: '0'
+      });
+      map.panTo(startMarker.getPosition());
+      startWindow.setContent('ATTENTION!' +
+          '<br/>' +
+          'Looking for Andre Weigandt!!!<br/>' +
+          '<img src="images/image4.jpg"/><br/><br/>' +
+          'Have some info that he have been seen in <a href="#" onClick="myClick(1)">Canada</a>');
+      startWindow.open(map, startMarker);
+      map.setZoom(12);
+
+    }
+  }
+
+  function myClick(markerID) {
+    google.maps.event.trigger(gmarkers[markerID], 'click');
+  }
+
+  var markers = [
+    {
+      "id": '1',
+      "latitude": '43.66316223144531',
+      "longitude": '-79.37906646728516',
+      "name": 'Toronto, Canada',
+      "address": 'Canada resident<br/><img src="images/image1.jpg"/><br/> knows about some clues in Thailand <br/> <a href="#" onclick="myClick(2);">Go Thailand</a>',
+      "zoom": 12
+    },
+    {
+      "id": '2',
+      "latitude": '7.9928107261657715',
+      "longitude": '98.32903289794922',
+      "name": 'Phuket, Thailand',
+      "address": 'Thailand resident<br/><img src="images/image2.jpg"/><br/> knows about some clues in Armenia <br/> <a href="#" onclick="myClick(3);">Go Armenia</a>',
+      "zoom": 12
+    },
+    {
+      "id": '3',
+      "latitude": '40.19061279296875',
+      "longitude": '44.514522552490234',
+      "name": 'Yerevan, Armenia',
+      "address": 'Armenia resident<br/><img src="images/image3.jpg"/><br/> knows about some clues in Germany <br/> <a href="#" onclick="myClick(4);">Go Germany</a>',
+      "zoom": 12
+    },
+    {
+      "id": '4',
+      "latitude": '50.77702713012695',
+      "longitude": '6.084144115447998',
+      "name": 'Aachen, Germany',
+      "address": 'Here we caught him! Bring the cake!<br/><img src="images/image5.jpg"/>',
+      "zoom": 12
+    }
+  ];
+</script>
+
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDCeSCmbLWybeK4vMHfqfBDY_kyeCA0imk&libraries=maps,marker&callback=initMap" async defer></script>
+
+</body>
+</html>
