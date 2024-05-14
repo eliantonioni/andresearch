@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Searching for a missing person</title>
   <style>
 
     .map-div-class {
@@ -56,7 +55,6 @@
 
           map.panTo(marker.getPosition());
 //          map.panTo(marker.getPosition(), animationOptions);
-
 /*
           var newLocation = marker.getPosition();
           var currentBounds = map.getBounds();
@@ -64,9 +62,14 @@
           map.fitBounds(newBounds, 20000);
 */
 
-          infoWindow.setContent(data.address);
-          infoWindow.open(map, marker);
-          map.setZoom(data.zoom);
+          fetch(data.address)
+          .then(response => response.text())
+          .then(html => {
+            infoWindow.setContent(html);
+            infoWindow.open(map, marker);
+            map.setZoom(data.zoom);
+          })
+          .catch(error => console.error('Error loading HTML:', error));
         });
       })(marker, data);
       google.maps.event.addListener(marker, 'dragend', function(evt) {
@@ -75,20 +78,21 @@
 
       var startWindow = new google.maps.InfoWindow();
       var startMarker = new google.maps.Marker({
-        position: new google.maps.LatLng(52.074928283691406, 4.300699710845947),
+        position: new google.maps.LatLng(45.42151612154077, -75.71653854757143),
         map: map,
-        title: "Hague, Netherlands",
+        title: "Ottawa, Canada",
         draggable: false,
         markerID: '0'
       });
       map.panTo(startMarker.getPosition());
-      startWindow.setContent('ATTENTION!' +
-          '<br/>' +
-          'Looking for Andre Weigandt!!!<br/>' +
-          '<img src="images/image4.jpg"/><br/><br/>' +
-          'Have some info that he have been seen in <a href="#" onClick="myClick(1)">Canada</a>');
-      startWindow.open(map, startMarker);
-      map.setZoom(12);
+      fetch('locations/canada.html')
+      .then(response => response.text())
+      .then(html => {
+        startWindow.setContent(html);
+        startWindow.open(map, startMarker);
+        map.setZoom(12);
+      })
+      .catch(error => console.error('Error loading HTML:', error));
 
     }
   }
@@ -100,26 +104,26 @@
   var markers = [
     {
       "id": '1',
-      "latitude": '43.66316223144531',
-      "longitude": '-79.37906646728516',
-      "name": 'Toronto, Canada',
-      "address": 'Canada resident<br/><img src="images/image1.jpg"/><br/> knows about some clues in Thailand <br/> <a href="#" onclick="myClick(2);">Go Thailand</a>',
+      "latitude": '10.317359986880072',
+      "longitude": '123.8903734944102',
+      "name": 'Cebu, Phillipines',
+      "address": 'locations/phillipines.html',
       "zoom": 12
     },
     {
       "id": '2',
-      "latitude": '7.9928107261657715',
-      "longitude": '98.32903289794922',
-      "name": 'Phuket, Thailand',
-      "address": 'Thailand resident<br/><img src="images/image2.jpg"/><br/> knows about some clues in Armenia <br/> <a href="#" onclick="myClick(3);">Go Armenia</a>',
+      "latitude": '13.766909547523952',
+      "longitude": '100.51192881555546',
+      "name": 'Bangkok, Thailand',
+      "address": 'locations/thailand.html',
       "zoom": 12
     },
     {
       "id": '3',
-      "latitude": '40.19061279296875',
-      "longitude": '44.514522552490234',
-      "name": 'Yerevan, Armenia',
-      "address": 'Armenia resident<br/><img src="images/image3.jpg"/><br/> knows about some clues in Germany <br/> <a href="#" onclick="myClick(4);">Go Germany</a>',
+      "latitude": '43.24114624065806',
+      "longitude": '76.88375340245614',
+      "name": 'Almaty, Kazakhstan',
+      "address": 'locations/kazakhstan.html',
       "zoom": 12
     },
     {
