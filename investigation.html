@@ -52,14 +52,6 @@
             easing: 'linear' // Easing function for animation
           };
 
-          var latOffset = -0.1;
-          var lngOffset = -0.1;
-          var newCenter = new google.maps.LatLng(
-              marker.getPosition().lat() + latOffset,
-              marker.getPosition().lng() + lngOffset
-          );
-
-          map.panTo(newCenter);
 //          map.panTo(marker.getPosition());
 //          map.panTo(marker.getPosition(), animationOptions);
 /*
@@ -75,6 +67,15 @@
             infoWindow.setContent(html);
             infoWindow.open(map, marker);
             map.setZoom(data.zoom);
+
+            var latOffset = -0.1;
+            var lngOffset = -0.1;
+            var newCenter = new google.maps.LatLng(
+                marker.getPosition().lat() + latOffset,
+                marker.getPosition().lng() + lngOffset
+            );
+
+            map.panTo(newCenter);
           })
           .catch(error => console.error('Error loading HTML:', error));
         });
