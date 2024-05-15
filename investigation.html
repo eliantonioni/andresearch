@@ -66,21 +66,20 @@
           .then(html => {
             infoWindow.setContent(html);
             infoWindow.open(map, marker);
-            map.setZoom(data.zoom);
+            google.maps.event.addListenerOnce(infoWindow, 'domready', function() {
+              map.setZoom(data.zoom);
 
-            var latOffset = -0.1;
-            var newCenter = new google.maps.LatLng(
-                marker.getPosition().lat() + latOffset,
-                marker.getPosition().lng()
-            );
-            map.panTo(newCenter);
+              var latOffset = -0.2;
+              var newCenter = new google.maps.LatLng(
+                  marker.getPosition().lat() + latOffset,
+                  marker.getPosition().lng()
+              );
+              map.panTo(newCenter);
+            });
           })
           .catch(error => console.error('Error loading HTML:', error));
         });
       })(marker, data);
-      google.maps.event.addListener(marker, 'dragend', function(evt) {
-        document.getElementById('current').innerHTML = '<p>Marker dropped: Current Lat: ' + evt.latLng.lat().toFixed(3) + ' Current Lng: ' + evt.latLng.lng().toFixed(3) + '</p>';
-      });
 
       var startWindow = new google.maps.InfoWindow();
       var startMarker = new google.maps.Marker({
